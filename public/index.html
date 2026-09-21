@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Kai's Stripe Demo Store</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f6f7f9;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .product-card {
+      width: 420px;
+      background: white;
+      border-radius: 20px;
+      padding: 35px;
+      text-align: center;
+
+      box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.10);
+    }
+
+    .store-name {
+      color: #635bff;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    .product-image {
+      width: 280px;
+      height: 280px;
+      object-fit: contain;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      margin: 5px 0 10px;
+      font-size: 30px;
+      color: #202124;
+    }
+
+    .description {
+      color: #666;
+      font-size: 16px;
+      line-height: 1.5;
+      margin: 0 15px 20px;
+    }
+
+    .price {
+      font-size: 28px;
+      font-weight: bold;
+      color: #202124;
+      margin-bottom: 25px;
+    }
+
+    .buy-button {
+      width: 100%;
+      background: #635bff;
+      color: white;
+
+      border: none;
+      border-radius: 10px;
+
+      padding: 15px 25px;
+
+      font-size: 17px;
+      font-weight: bold;
+
+      cursor: pointer;
+
+      transition:
+        background 0.2s,
+        transform 0.1s;
+    }
+
+    .buy-button:hover {
+      background: #5147e5;
+    }
+
+    .buy-button:active {
+      transform: scale(0.98);
+    }
+
+    .powered-by {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="product-card">
+
+    <div class="store-name">
+      KAI'S STRIPE DEMO STORE
+    </div>
+
+    <img
+      src="/funky_headphone.png"
+      alt="Funky Headphone"
+      class="product-image"
+    >
+
+    <h1>Funky Headphone</h1>
+
+    <p class="description">
+      Colourful over-ear headphones for people
+      who think ordinary headphones are boring.
+    </p>
+
+    <div class="price">
+      AUD $123.45
+    </div>
+
+    <form
+      action="/create-checkout-session"
+      method="POST"
+    >
+      <button
+        class="buy-button"
+        type="submit"
+      >
+        Buy with Stripe
+      </button>
+    </form>
+
+    <div class="powered-by">
+      Secure checkout powered by Stripe
+    </div>
+
+  </div>
+
+</body>
+
+</html>
