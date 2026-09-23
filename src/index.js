@@ -77,6 +77,7 @@ export default {
 
         // Setup mode collects a payment method without charging the card
         body.append("mode", "setup");
+        body.append("currency", "aud");
 
         body.append(
           "success_url",
