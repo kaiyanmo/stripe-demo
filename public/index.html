@@ -114,11 +114,7 @@
       KAI'S STRIPE DEMO STORE
     </div>
 
-    <img
-      src="/funky_headphone.png"
-      alt="Funky Headphone"
-      class="product-image"
-    >
+    <img src="/funky_headphone.png" alt="Funky Headphone" class="product-image">
 
     <h1>Funky Headphone</h1>
 
@@ -131,18 +127,25 @@
       AUD $123.45
     </div>
 
-    <form
-      action="/create-checkout-session"
-      method="POST"
-    >
-      <button
-        class="buy-button"
-        type="submit"
-      >
+    <form action="/create-checkout-session" method="POST">
+      <button class="buy-button" type="submit">
         Buy with Stripe
       </button>
     </form>
+    <div class="tokenization-section">
+      <h3>Card Tokenization Demo</h3>
 
+      <p>
+        Securely save a card with Stripe for future payments.
+        The card will not be charged.
+      </p>
+
+      <form action="/create-setup-session" method="POST">
+        <button class="tokenize-button" type="submit">
+          Save / Tokenize Card
+        </button>
+      </form>
+    </div>
     <div class="powered-by">
       Secure checkout powered by Stripe
     </div>

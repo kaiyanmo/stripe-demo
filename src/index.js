@@ -67,6 +67,66 @@ export default {
       }
     }
 
+    // Create a Stripe Checkout Session to save/tokenize a card
+    if (
+      request.method === "POST" &&
+      url.pathname === "/create-setup-session"
+    ) {
+      try {
+        const body = new URLSearchParams();
+
+        // Setup mode collects a payment method without charging the card
+        body.append("mode", "setup");
+
+        body.append(
+          "success_url",
+          `${url.origin}/token-success.html?session_id={CHECKOUT_SESSION_ID}`
+        );
+
+        body.append(
+          "cancel_url",
+          `${url.origin}/`
+        );
+
+        const stripeResponse = await fetch(
+          "https://api.stripe.com/v1/checkout/sessions",
+          {
+            method: "POST",
+
+            headers: {
+              "Authorization": `Bearer ${env.STRIPE_SECRET_KEY}`,
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+
+            body: body.toString(),
+          }
+        );
+
+        const session = await stripeResponse.json();
+
+        if (!stripeResponse.ok) {
+          console.error("Stripe setup error:", session);
+
+          return new Response(
+            "Unable to create Setup Session",
+            { status: 500 }
+          );
+        }
+
+        console.log("Setup Session created:", session.id);
+
+        return Response.redirect(session.url, 303);
+
+      } catch (error) {
+        console.error("Setup Session error:", error);
+
+        return new Response(
+          "Unable to create Setup Session",
+          { status: 500 }
+        );
+      }
+    }
+
     // Everything else comes from /public
     return env.ASSETS.fetch(request);
   },
