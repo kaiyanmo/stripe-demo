@@ -8,7 +8,8 @@
     "binding": "ASSETS",
     "run_worker_first": [
       "/create-checkout-session",
-      "/create-setup-session"
+      "/create-setup-session",
+      "/api/setup-result"
     ]
   }
 }

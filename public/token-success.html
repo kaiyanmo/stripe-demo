@@ -1,53 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card Saved</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 60px 20px;
-        }
+  <title>Card Tokenized</title>
 
-        .card {
-            max-width: 500px;
-            margin: auto;
-            padding: 40px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-        }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6f8fa;
+      margin: 0;
+      padding: 60px 20px;
+    }
 
-        h1 {
-            margin-bottom: 10px;
-        }
+    .card {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
 
-        a {
-            display: inline-block;
-            margin-top: 25px;
-        }
-    </style>
+    h1 {
+      margin-top: 0;
+    }
+
+    .success {
+      color: #16803c;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    .field {
+      margin: 20px 0;
+    }
+
+    .label {
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .value {
+      font-family: monospace;
+      font-size: 16px;
+      overflow-wrap: anywhere;
+    }
+
+    .card-display {
+      font-family: Arial, sans-serif;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .note {
+      margin-top: 30px;
+      padding: 15px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 25px;
+    }
+  </style>
 </head>
 
 <body>
 
-    <div class="card">
-        <h1>Card Saved Successfully</h1>
+<div class="card">
 
-        <p>
-            Stripe has securely stored the payment method for future use.
-        </p>
+  <h1>Card Tokenized Successfully</h1>
 
-        <p>
-            No payment was taken.
-        </p>
+  <div class="success">
+    ✓ Stripe securely saved the payment method
+  </div>
 
-        <a href="/">Return to merchant</a>
+  <div id="loading">
+    Retrieving tokenization details from Stripe...
+  </div>
+
+  <div id="result" style="display:none;">
+
+    <div class="field">
+      <div class="label">SetupIntent</div>
+      <div class="value" id="setup-intent"></div>
     </div>
 
-</body>
+    <div class="field">
+      <div class="label">Setup Status</div>
+      <div class="value" id="setup-status"></div>
+    </div>
 
+    <div class="field">
+      <div class="label">Stripe PaymentMethod Token</div>
+      <div class="value" id="payment-method"></div>
+    </div>
+
+    <div class="field">
+      <div class="label">Tokenized Card</div>
+      <div class="card-display" id="card-display"></div>
+    </div>
+
+    <div class="field">
+      <div class="label">Expiry</div>
+      <div class="value" id="expiry"></div>
+    </div>
+
+    <div class="note">
+      No payment was made during this operation.
+      The merchant does not store the PAN or CVC.
+      Stripe stores the payment credential and returns a reusable
+      PaymentMethod identifier.
+    </div>
+
+  </div>
+
+  <div id="error" style="display:none;">
+    Unable to retrieve tokenization details.
+  </div>
+
+  <a href="/">Return to merchant</a>
+
+</div>
+
+<script>
+  async function loadSetupResult() {
+
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+
+    if (!sessionId) {
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("error").style.display = "block";
+      return;
+    }
+
+    try {
+
+      const response = await fetch(
+        `/api/setup-result?session_id=${encodeURIComponent(sessionId)}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to retrieve setup result");
+      }
+
+      const data = await response.json();
+
+      document.getElementById("setup-intent").textContent =
+        data.setup_intent;
+
+      document.getElementById("setup-status").textContent =
+        data.setup_status;
+
+      document.getElementById("payment-method").textContent =
+        data.payment_method;
+
+      const brand =
+        data.card.brand.charAt(0).toUpperCase() +
+        data.card.brand.slice(1);
+
+      document.getElementById("card-display").textContent =
+        `${brand} •••• ${data.card.last4}`;
+
+      document.getElementById("expiry").textContent =
+        `${String(data.card.exp_month).padStart(2, "0")}/${data.card.exp_year}`;
+
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("result").style.display = "block";
+
+    } catch (error) {
+
+      console.error(error);
+
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("error").style.display = "block";
+    }
+  }
+
+  loadSetupResult();
+</script>
+
+</body>
 </html>
